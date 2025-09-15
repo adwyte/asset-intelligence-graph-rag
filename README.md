@@ -1,2 +1,1 @@
-# asset-intelligence-graph-rag
-
+GraphRAG engine for Product Asset Intelligence and Reuse.
