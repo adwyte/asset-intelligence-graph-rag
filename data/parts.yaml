@@ -1,0 +1,207 @@
+product:
+  name: "Meta Quest 3"
+  description: >
+    A mixed reality / standalone VR headset with pancake optics, stereo LCD panels,
+    inside-out tracking (multiple cameras + depth projector), handheld controllers,
+    internal battery, and foldable visor assembly.
+  sku: "Quest3"
+
+parts:
+  - part_id: "A-HEADSET"
+    name: "Headset Assembly"
+    category: "Assembly"
+    description: >
+      The main headset unit: visor / optics / displays / sensors / battery / shell / strap
+    specs:
+      - key: "mass_g"
+        value: "515"
+        unit: "g"
+        note: "Approximate weight of headset only, source: Wikipedia"
+      - key: "battery_capacity_Wh"
+        value: "19.44"
+        unit: "Wh"
+        note: "Battery spec from teardown reports"
+    children:
+      - part_id: "P-OPTICS"
+        name: "Optical & Display Stack"
+        category: "Optics/Display"
+        description: >
+          Pancake lens system, LCD display panels (left & right), front cover & visor components.
+        materials:
+          - "Optical Glass"
+          - "Polarizer Films"
+          - "Plastic"
+          - "AR Coatings"
+        specs:
+          - key: "lens_type"
+            value: "pancake"
+          - key: "resolution_per_eye"
+            value: "2064x2208"
+            unit: "px"
+          - key: "panel_type"
+            value: "Fast-switching LCD"
+        children:
+          - part_id: "P-LENS-L"
+            name: "Left Pancake Lens"
+            category: "Lens"
+            materials: ["Optical Glass"]
+            description: "Left-eye folded pancake lens element."
+          - part_id: "P-LENS-R"
+            name: "Right Pancake Lens"
+            category: "Lens"
+            materials: ["Optical Glass"]
+            description: "Right-eye folded pancake lens element."
+          - part_id: "P-LCD-L"
+            name: "Left LCD Panel"
+            category: "Display Panel"
+            materials: ["Glass", "ITO", "Liquid Crystal", "Polarizer Film"]
+            specs:
+              - key: "resolution"
+                value: "2064x2208"
+                unit: "px"
+          - part_id: "P-LCD-R"
+            name: "Right LCD Panel"
+            category: "Display Panel"
+            materials: ["Glass", "ITO", "Liquid Crystal", "Polarizer Film"]
+            specs:
+              - key: "resolution"
+                value: "2064x2208"
+                unit: "px"
+
+      - part_id: "P-SENSORS"
+        name: "Sensor Suite"
+        category: "Electronics / Sensors"
+        description: "Cameras for tracking and passthrough, depth projector, IMU."
+        specs:
+          - key: "camera_count_tracking"
+            value: "4"
+          - key: "camera_count_color"
+            value: "2"
+          - key: "depth_projector"
+            value: "1"
+        children:
+          - part_id: "P-CAM-IR-1"
+            name: "IR Tracking Camera #1"
+            category: "Sensor / Camera"
+          - part_id: "P-CAM-IR-2"
+            name: "IR Tracking Camera #2"
+            category: "Sensor / Camera"
+          - part_id: "P-CAM-IR-3"
+            name: "IR Tracking Camera #3"
+            category: "Sensor / Camera"
+          - part_id: "P-CAM-IR-4"
+            name: "IR Tracking Camera #4"
+            category: "Sensor / Camera"
+          - part_id: "P-CAM-RGB-L"
+            name: "Left RGB / Passthrough Camera"
+            category: "Sensor / Camera"
+          - part_id: "P-CAM-RGB-R"
+            name: "Right RGB / Passthrough Camera"
+            category: "Sensor / Camera"
+          - part_id: "P-DEPTH"
+            name: "Depth Projector"
+            category: "Sensor / Camera"
+
+      - part_id: "P-COMPUTE"
+        name: "Mainboard / SoC Module"
+        category: "Electronics"
+        description: "PCB containing Snapdragon XR2 Gen2, RAM, storage, PMIC, IMU, audio, and wireless."
+        specs:
+          - key: "SoC"
+            value: "Snapdragon XR2 Gen2"
+          - key: "ram_gb"
+            value: "8"
+            unit: "GB"
+          - key: "storage_options"
+            value: "128/512"
+            unit: "GB"
+          - key: "connectivity"
+            value: "WiFi-6E, Bluetooth"
+
+      - part_id: "P-POWER"
+        name: "Battery Pack"
+        category: "Power"
+        description: "Rechargeable Li-ion pack inside visor."
+        specs:
+          - key: "capacity_mAh"
+            value: "4879"
+            unit: "mAh"
+          - key: "voltage_nominal"
+            value: "3.87"
+            unit: "V"
+          - key: "energy_Wh"
+            value: "19.44"
+            unit: "Wh"
+
+      - part_id: "P-COOLING"
+        name: "Cooling / Thermal"
+        category: "Thermal"
+        description: "Vapor chamber, graphite sheet, small blower fan."
+        materials: ["Copper", "Graphite", "Plastic"]
+        children:
+          - part_id: "P-VC"
+            name: "Vapor Chamber"
+            category: "Thermal"
+          - part_id: "P-FAN"
+            name: "Cooling Fan"
+            category: "Thermal"
+
+      - part_id: "P-SHELL"
+        name: "Enclosure / Housing"
+        category: "Mechanical"
+        description: "Outer visor, shell, face padding, strap."
+        children:
+          - part_id: "P-FACE"
+            name: "Facial Interface"
+            category: "Comfort"
+            materials: ["Foam", "Textile", "Elastomer"]
+          - part_id: "P-STRAP"
+            name: "Head Strap"
+            category: "Accessory"
+            materials: ["Textile", "Foam", "Plastic"]
+
+      - part_id: "P-CONTROLLERS"
+        name: "Touch Plus Controllers"
+        category: "Accessory / Input"
+        description: "Pair of controllers with buttons, sticks, sensors."
+        children:
+          - part_id: "C-LEFT"
+            name: "Left Controller"
+            category: "Input"
+            children:
+              - part_id: "C-PCB-L"
+                name: "Logic Board Left"
+                category: "Electronics"
+              - part_id: "C-BAT-L"
+                name: "Controller Battery Left"
+                category: "Power"
+              - part_id: "C-SHELL-L"
+                name: "Controller Shell Left"
+                category: "Mechanical"
+          - part_id: "C-RIGHT"
+            name: "Right Controller"
+            category: "Input"
+            children:
+              - part_id: "C-PCB-R"
+                name: "Logic Board Right"
+                category: "Electronics"
+              - part_id: "C-BAT-R"
+                name: "Controller Battery Right"
+                category: "Power"
+              - part_id: "C-SHELL-R"
+                name: "Controller Shell Right"
+                category: "Mechanical"
+
+documents:
+  - name: "General Specs"
+    source: "public datasheet"
+    text: >
+      Headset weight ~515g; Snapdragon XR2 Gen2; 8 GB RAM; storage 128/512 GB; 
+      dual LCD panels at 2064x2208 per eye; color passthrough cameras; depth projector;
+      ~4879 mAh Li-ion battery; WiFi-6E, Bluetooth.
+  - name: "Teardown Observations"
+    source: "iFixit / UploadVR"
+    text: >
+      The battery occupies much of the internal volume. 
+      The depth projector sits where the Quest Pro had space reserved.
+      Components are modular but require careful disassembly.
