@@ -5,3 +5,5 @@ python-dotenv>=1.0.0
 sentence-transformers>=2.7.0
 numpy>=1.26.0
 groq>=0.11.0
+pypdf~=6.0.0
+streamlit~=1.49.1

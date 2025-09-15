@@ -13,11 +13,9 @@ def load_env():
         "NEO4J_USER": os.getenv("NEO4J_USER"),
         "NEO4J_PASSWORD": os.getenv("NEO4J_PASSWORD"),
 
-        # Embeddings (default: local + free)
         "EMBEDDING_BACKEND": os.getenv("EMBEDDING_BACKEND", "sentence-transformers"),
         "EMBEDDING_MODEL": os.getenv("EMBEDDING_MODEL", "thenlper/gte-small"),
 
-        # LLM (Groq for answer synthesis)
         "GROQ_API_KEY": os.getenv("GROQ_API_KEY"),
         "GROQ_CHAT_MODEL": os.getenv("GROQ_CHAT_MODEL", "llama-3.3-70b-versatile"),
     }
@@ -62,8 +60,8 @@ def get_embedder(env):
 
 def vector_search_chunks(tx, query_vec, top_k, scope="all"):
     """
-    Searches :Chunk nodes via vector index, returning contexts linked to either a Part
-    or the Product. 'scope' can be 'all' | 'part' | 'product'.
+    Search :Chunk via native vector index. Returns contexts for Product or Part.
+    scope: 'all' | 'part' | 'product'
     """
     filter_clause = ""
     if scope == "part":
@@ -94,6 +92,64 @@ def vector_search_chunks(tx, query_vec, top_k, scope="all"):
     return list(tx.run(cypher, q=query_vec, k=top_k))
 
 
+def vector_search_parts(tx, query_vec, top_k):
+    """
+    Search :Part via the part_embedding_index (embeddings of part descriptions).
+    Build a pseudo-context using the part description + specs.
+    """
+    cypher = """
+    CALL db.index.vector.queryNodes('part_embedding_index', $k, $q)
+    YIELD node, score
+    OPTIONAL MATCH (node)-[:HAS_SPEC]->(s:Spec)
+    WITH node, score, collect({key:s.key, value:s.value, unit:s.unit, note:s.note}) AS specs
+    RETURN
+      node.part_id AS part_id,
+      node.name    AS part_name,
+      coalesce(node.category, 'Part') AS category,
+      coalesce(node.description, '')  AS description,
+      specs,
+      score
+    ORDER BY score DESC
+    LIMIT $k
+    """
+    rows = list(tx.run(cypher, q=query_vec, k=top_k))
+    # Normalize to the same shape as chunk rows
+    out = []
+    for r in rows:
+        desc = r["description"] or ""
+        text = desc.strip() if desc.strip() else f"{r['part_name']} ({r['category']})"
+        out.append({
+            "chunk_id": None,
+            "text": text,
+            "score": r["score"],
+            "part_id": r["part_id"],
+            "part_name": r["part_name"],
+            "category": r["category"],
+            "specs": r["specs"],
+            "doc_name": "Part Description",
+            "source": "part",
+        })
+    return out
+
+
+def merge_and_trim(rows_a, rows_b, top_k):
+    """Merge two result lists, dedupe by (part_id, text), keep best scores, trim to K."""
+    seen = set()
+    merged = []
+    for lst in (rows_a, rows_b):
+        for r in lst:
+            key = (r["part_id"], r["text"])
+            if key in seen:
+                continue
+            seen.add(key)
+            merged.append(r)
+    merged.sort(key=lambda x: float(x.get("score") or 0), reverse=True)
+    return merged[:top_k]
+
+
+# -------------------------
+# Answer Synthesis
+# -------------------------
 def format_specs(specs):
     if not specs:
         return ""
@@ -147,11 +203,13 @@ def synthesize_answer(env, question, contexts):
 def main():
     parser = argparse.ArgumentParser(description="Graph RAG CLI (Neo4j + vector search + Groq synthesis)")
     parser.add_argument("question", type=str, help="Your question")
-    parser.add_argument("--k", type=int, default=8, help="Top-K chunks")
+    parser.add_argument("--k", type=int, default=8, help="Top-K items to return")
     parser.add_argument("--scope", choices=["all", "part", "product"], default="all",
                         help="Retrieve from parts only, product only, or both")
     parser.add_argument("--min-score", type=float, default=None,
                         help="Optional client-side filter to drop results below this score")
+    parser.add_argument("--no-part-fallback", action="store_true",
+                        help="Disable fallback to part embeddings when chunk results are weak/empty")
     parser.add_argument("--json", action="store_true", help="Print raw JSON rows instead of text output")
     args = parser.parse_args()
 
@@ -164,15 +222,28 @@ def main():
     # Retrieve
     driver = GraphDatabase.driver(env["NEO4J_URI"], auth=(env["NEO4J_USER"], env["NEO4J_PASSWORD"]))
     with driver.session() as session:
-        rows = session.execute_read(vector_search_chunks, q_vec, args.k, args.scope)
+        rows_chunks = session.execute_read(vector_search_chunks, q_vec, args.k, args.scope)
+
+        # Decide on part fallback
+        rows_parts = []
+        want_parts = (args.scope in ("all", "part")) and (not args.no_part_fallback)
+        if want_parts:
+            need_fallback = (len(rows_chunks) == 0)
+            if args.min_score is not None and not need_fallback:
+                # If all chunk scores are below threshold, also fallback
+                above = [r for r in rows_chunks if r["score"] is not None and float(r["score"]) >= args.min_score]
+                need_fallback = (len(above) == 0)
+            if need_fallback:
+                rows_parts = session.execute_read(vector_search_parts, q_vec, args.k)
+
     driver.close()
 
-    # Optional score filter (client-side)
+    rows = merge_and_trim(rows_chunks, rows_parts, args.k)
     if args.min_score is not None:
         rows = [r for r in rows if r["score"] is not None and float(r["score"]) >= args.min_score]
 
     if not rows:
-        print("No results. Did you ingest data and create the vector index?")
+        print("No results. If you used --scope part, add per-part documents or leave fallback enabled.")
         return
 
     if args.json:
@@ -192,6 +263,7 @@ def main():
         print(textwrap.fill(answer, width=100))
     else:
         print("\n(No LLM key set; showing retrieved context only.)")
+
 
 if __name__ == "__main__":
     main()
