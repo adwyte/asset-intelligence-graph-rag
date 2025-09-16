@@ -16,11 +16,18 @@ parts:
       - key: "mass_g"
         value: "515"
         unit: "g"
-        note: "Approximate weight of headset only, source: Wikipedia"
+        note: "Headset weight. Cross-verified with Wikipedia."
       - key: "battery_capacity_Wh"
         value: "19.44"
         unit: "Wh"
         note: "Battery spec from teardown reports"
+      - key: "ipd_adjust_range_mm"
+        value: "53–75"
+        unit: "mm"
+        note: "Mechanical IPD wheel; range per Wikipedia."
+      - key: "usb_port"
+        value: "USB-C"
+        note: "Charging / data"
     children:
       - part_id: "P-OPTICS"
         name: "Optical & Display Stack"
@@ -38,8 +45,15 @@ parts:
           - key: "resolution_per_eye"
             value: "2064x2208"
             unit: "px"
+            note: "Per-eye panel resolution."
           - key: "panel_type"
             value: "Fast-switching LCD"
+          - key: "refresh_rate_max_hz"
+            value: "120"
+            unit: "Hz"
+            note: "Panel runs 90–120 Hz; Wikipedia."
+          - key: "ipd_adjust_method"
+            value: "Scroll wheel"
         children:
           - part_id: "P-LENS-L"
             name: "Left Pancake Lens"
@@ -75,10 +89,14 @@ parts:
         specs:
           - key: "camera_count_tracking"
             value: "4"
+            note: "4× IR (≈400×400) tracking cameras."
           - key: "camera_count_color"
             value: "2"
+            note: "2× RGB for color passthrough (≈4 MP each)."
           - key: "depth_projector"
             value: "1"
+          - key: "imu"
+            value: "6-DoF IMU"
         children:
           - part_id: "P-CAM-IR-1"
             name: "IR Tracking Camera #1"
@@ -95,9 +113,17 @@ parts:
           - part_id: "P-CAM-RGB-L"
             name: "Left RGB / Passthrough Camera"
             category: "Sensor / Camera"
+            specs:
+              - key: "resolution_mp"
+                value: "4"
+                unit: "MP"
           - part_id: "P-CAM-RGB-R"
             name: "Right RGB / Passthrough Camera"
             category: "Sensor / Camera"
+            specs:
+              - key: "resolution_mp"
+                value: "4"
+                unit: "MP"
           - part_id: "P-DEPTH"
             name: "Depth Projector"
             category: "Sensor / Camera"
@@ -109,14 +135,24 @@ parts:
         specs:
           - key: "SoC"
             value: "Snapdragon XR2 Gen2"
+          - key: "gpu"
+            value: "Adreno 740 @ ~599 MHz"
+            note: "GPU identifier & clock per Wikipedia."
           - key: "ram_gb"
             value: "8"
             unit: "GB"
           - key: "storage_options"
             value: "128/512"
             unit: "GB"
-          - key: "connectivity"
-            value: "WiFi-6E, Bluetooth"
+          - key: "connectivity_wifi"
+            value: "Wi-Fi 6E"
+          - key: "connectivity_bt"
+            value: "Bluetooth 5.2"
+          - key: "audio"
+            value: "Integrated spatial speakers + 3.5mm jack"
+            note: "3.5mm jack present on Quest 3."
+          - key: "os"
+            value: "Meta Horizon OS (Android-based)"
 
       - part_id: "P-POWER"
         name: "Battery Pack"
@@ -164,6 +200,13 @@ parts:
         name: "Touch Plus Controllers"
         category: "Accessory / Input"
         description: "Pair of controllers with buttons, sticks, sensors."
+        specs:
+          - key: "power_source"
+            value: "1× AA per controller"
+            note: "Touch Plus use AA cells; no on-board cameras."
+          - key: "tracking_ring"
+            value: "Absent"
+            note: "Ringless design; LEDs on body tracked by headset."
         children:
           - part_id: "C-LEFT"
             name: "Left Controller"
@@ -205,3 +248,18 @@ documents:
       The battery occupies much of the internal volume. 
       The depth projector sits where the Quest Pro had space reserved.
       Components are modular but require careful disassembly.
+  - name: "GSMArena Review (cross-verified)"
+    source: "GSMArena (news-60375) — direct access blocked by robots; core specs cross-checked with Wikipedia & Meta product page"
+    text: >
+      Review discusses pancake lenses, higher-resolution LCDs (2064×2208/eye), 90–120 Hz,
+      Snapdragon XR2 Gen 2 performance uplift, color passthrough via dual RGB cameras,
+      four IR tracking cameras, depth sensor, ~515 g weight, Wi-Fi 6E / BT 5.2, Touch Plus controllers.
+
+  - name: "Cross-Verification Sources"
+    source: "Wikipedia / Meta"
+    links:
+      - "Wikipedia: Meta Quest 3"
+      - "Meta: Quest 3 product page"
+    text: >
+      Used to confirm refresh rate (90–120 Hz), camera counts & resolutions (2× 4 MP RGB, 4× ~400×400 IR),
+      weight 515 g, IPD range 53–75 mm with wheel, Adreno 740 GPU, Wi-Fi 6E + Bluetooth 5.2.
