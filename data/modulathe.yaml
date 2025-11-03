@@ -1,0 +1,41 @@
+product:
+  name: Modulathe V2
+  description: >
+    Open-source modular lathe with concrete frame, upgraded spindle mount, and linear motion system.
+parts:
+  - part_id: MOD-SPINDLE-001
+    name: Main Spindle Assembly
+    category: Spindle
+    description: 500W brushless DC motor with ER11 collet.
+    specs:
+      - key: power
+        value: 500
+        unit: W
+      - key: connector
+        value: ER11
+        unit: type
+      - key: voltage
+        value: 24
+        unit: V
+  - part_id: MOD-CHUCK-002
+    name: 3-Jaw Chuck
+    category: Workholding
+    description: Steel self-centering chuck with 80mm diameter.
+    specs:
+      - key: diameter
+        value: 80
+        unit: mm
+      - key: material
+        value: steel
+        unit: type
+  - part_id: MOD-CONTROLLER-003
+    name: Motor Controller
+    category: Electronics
+    description: Brushless controller supporting 24V input, PWM speed control.
+    specs:
+      - key: voltage
+        value: 24
+        unit: V
+      - key: control
+        value: PWM
+        unit: type

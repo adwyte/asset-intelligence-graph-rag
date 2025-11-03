@@ -1,4 +1,5 @@
 import os
+import json
 import textwrap
 import streamlit as st
 from neo4j import GraphDatabase
@@ -17,7 +18,6 @@ def load_env():
         "GROQ_CHAT_MODEL": os.getenv("GROQ_CHAT_MODEL", "llama-3.3-70b-versatile"),
     }
 
-
 @st.cache_resource(show_spinner=False)
 def get_embedder(env):
     backend = env["EMBEDDING_BACKEND"]
@@ -26,7 +26,8 @@ def get_embedder(env):
         from sentence_transformers import SentenceTransformer
         st_model = SentenceTransformer(model)
         def _embed(texts):
-            if isinstance(texts, str): texts = [texts]
+            if isinstance(texts, str):
+                texts = [texts]
             vecs = st_model.encode(texts, normalize_embeddings=True)
             return [v.tolist() for v in vecs]
         return _embed
@@ -34,7 +35,8 @@ def get_embedder(env):
         from groq import Groq
         client = Groq(api_key=env["GROQ_API_KEY"])
         def _embed(texts):
-            if isinstance(texts, str): texts = [texts]
+            if isinstance(texts, str):
+                texts = [texts]
             resp = client.embeddings.create(model=model, input=texts, encoding_format="float")
             return [d.embedding for d in resp.data]
         return _embed
@@ -55,15 +57,20 @@ def vector_search_chunks(session, q_vec, k, scope):
     {filter_clause}
     OPTIONAL MATCH (x)-[:HAS_SPEC]->(s:Spec)
     WITH node, score, d, x, collect({{key:s.key, value:s.value, unit:s.unit, note:s.note}}) AS specs
-    RETURN node.text AS text, score,
-           CASE WHEN x:Part THEN x.part_id ELSE 'PRODUCT' END AS part_id,
-           x.name AS part_name,
-           CASE WHEN x:Part THEN coalesce(x.category, 'Part') ELSE 'Product' END AS category,
-           specs, d.name AS doc_name, d.source AS source
-    ORDER BY score DESC LIMIT $k
+    RETURN
+      node.text AS text,
+      score,
+      CASE WHEN x:Part THEN x.part_id ELSE coalesce(x.sku, x.name, 'PRODUCT') END AS part_id,
+      x.name AS part_name,
+      CASE WHEN x:Part THEN coalesce(x.category, 'Part') ELSE 'Product' END AS category,
+      specs,
+      d.name AS doc_name,
+      d.source AS source
+    ORDER BY score DESC
+    LIMIT $k
     """
-    return list(session.run(cypher, q=q_vec, k=k))
-
+    result = session.run(cypher, q=q_vec, k=k)
+    return [r.data() for r in result]
 
 def vector_search_parts(session, q_vec, k):
     cypher = """
@@ -71,13 +78,46 @@ def vector_search_parts(session, q_vec, k):
     YIELD node, score
     OPTIONAL MATCH (node)-[:HAS_SPEC]->(s:Spec)
     WITH node, score, collect({key:s.key, value:s.value, unit:s.unit, note:s.note}) AS specs
-    RETURN coalesce(node.description,'') AS text, score,
-           node.part_id AS part_id, node.name AS part_name,
-           coalesce(node.category,'Part') AS category,
-           specs, 'Part Description' AS doc_name, 'part' AS source
-    ORDER BY score DESC LIMIT $k
+    RETURN
+      coalesce(node.description,'') AS text,
+      score,
+      node.part_id AS part_id,
+      node.name AS part_name,
+      coalesce(node.category,'Part') AS category,
+      specs,
+      'Part Description' AS doc_name,
+      'part' AS source
+    ORDER BY score DESC
+    LIMIT $k
     """
-    return list(session.run(cypher, q=q_vec, k=k))
+    result = session.run(cypher, q=q_vec, k=k)
+    return [r.data() for r in result]
+
+def vector_search_products(session, q_vec, k):
+    """
+    Optional product fallback (requires product_embedding_index in Neo4j).
+    """
+    if "modulathe" in q.lower():
+        filter_clause = "WHERE x:Product AND toLower(x.name) CONTAINS 'modulathe'"
+    cypher = """
+    CALL db.index.vector.queryNodes('product_embedding_index', $k, $q)
+    YIELD node, score
+    OPTIONAL MATCH (node)-[:HAS_SPEC]->(s:Spec)
+    WITH node, score, collect({key:s.key, value:s.value, unit:s.unit, note:s.note}) AS specs
+    RETURN
+      coalesce(node.description,'') AS text,
+      score,
+      coalesce(node.sku, node.name, 'PRODUCT') AS part_id,
+      node.name AS part_name,
+      'Product' AS category,
+      specs,
+      'Product Description' AS doc_name,
+      'product' AS source
+    ORDER BY score DESC
+    LIMIT $k
+    """
+    result = session.run(cypher, q=q_vec, k=k)
+    return [r.data() for r in result]
 
 
 def synthesize(env, question, contexts):
@@ -87,11 +127,13 @@ def synthesize(env, question, contexts):
     client = Groq(api_key=env["GROQ_API_KEY"])
 
     def format_specs(specs):
-        if not specs: return ""
+        if not specs:
+            return ""
         parts = []
         for s in specs:
             k = s.get("key")
-            if not k: continue
+            if not k:
+                continue
             v = s.get("value") or ""
             u = s.get("unit") or ""
             parts.append(f"{k}={v}{u}")
@@ -99,17 +141,23 @@ def synthesize(env, question, contexts):
 
     blocks = []
     for i, c in enumerate(contexts, 1):
-        header = f"[{i}] {c['category']}: {c['part_name']} ({c['part_id']})"
+        header = f"[{i}] {c.get('category')}: {c.get('part_name')} ({c.get('part_id')})"
         sp = format_specs(c.get("specs"))
-        if sp: header += f"\nSpecs: {sp}"
-        block = f"{header}\nDoc: {c['doc_name']} ({c['source']})\nChunk: {(c['text'] or '').replace('\\n',' ').strip()}"
+        if sp:
+            header += f"\nSpecs: {sp}"
+        chunk = (c.get("text") or "").replace("\n", " ").strip()
+        block = f"{header}\nDoc: {c.get('doc_name')} ({c.get('source')})\nChunk: {chunk}"
         blocks.append(block)
 
     messages = [
-        {"role":"system","content":"Answer using ONLY the provided context; if unknown, say you don't know."},
-        {"role":"user","content":f"Question: {question}\n\nContext:\n" + "\n\n".join(blocks) + "\n\nAnswer:"}
+        {"role": "system", "content": "Answer using ONLY the provided context; if unknown, say you don't know."},
+        {"role": "user", "content": f"Question: {question}\n\nContext:\n" + "\n\n".join(blocks) + "\n\nAnswer:"}
     ]
-    resp = client.chat.completions.create(model=env["GROQ_CHAT_MODEL"], messages=messages, temperature=0)
+    resp = client.chat.completions.create(
+        model=env["GROQ_CHAT_MODEL"],
+        messages=messages,
+        temperature=0
+    )
     return resp.choices[0].message.content.strip()
 
 
@@ -128,8 +176,13 @@ with col2:
 with col3:
     min_score = st.number_input("Min score filter", min_value=0.0, max_value=1.0, value=0.0, step=0.01)
 
-fallback = st.checkbox("Fallback to Part descriptions when chunks are weak/empty", value=True)
-scope_map = {"All":"all", "Parts only":"part", "Product only":"product"}
+col4, col5 = st.columns(2)
+with col4:
+    fallback_parts = st.checkbox("Fallback to Part embeddings", value=True)
+with col5:
+    fallback_products = st.checkbox("Fallback to Product embeddings (requires product index)", value=False)
+
+scope_map = {"All": "all", "Parts only": "part", "Product only": "product"}
 scope = scope_map[scope_ui]
 
 if st.button("Ask"):
@@ -137,29 +190,48 @@ if st.button("Ask"):
         driver = GraphDatabase.driver(env["NEO4J_URI"], auth=(env["NEO4J_USER"], env["NEO4J_PASSWORD"]))
         q_vec = embed(question)[0]
         with driver.session() as session:
-            rows_chunks = vector_search_chunks(session, q_vec, k, scope)
-            rows = rows_chunks
+            rows = vector_search_chunks(session, q_vec, k, scope)
 
-            # apply min score
+            # client-side min-score filter
             if min_score > 0:
-                rows = [r for r in rows if float(r["score"] or 0) >= min_score]
+                rows = [r for r in rows if float(r.get("score") or 0.0) >= min_score]
 
-            # fallback to part embeddings
-            if fallback and (scope in ("all","part")) and len(rows) == 0:
-                rows_parts = vector_search_parts(session, q_vec, k)
-                if min_score > 0:
-                    rows_parts = [r for r in rows_parts if float(r["score"] or 0) >= min_score]
-                rows = rows_parts
+            # fallbacks (trigger only if empty after filtering)
+            if not rows:
+                if fallback_parts and scope in ("all", "part"):
+                    try:
+                        rows = vector_search_parts(session, q_vec, k)
+                        if min_score > 0:
+                            rows = [r for r in rows if float(r.get("score") or 0.0) >= min_score]
+                    except Exception:
+                        rows = []
+                if not rows and fallback_products and scope in ("all", "product"):
+                    try:
+                        rows = vector_search_products(session, q_vec, k)
+                        if min_score > 0:
+                            rows = [r for r in rows if float(r.get("score") or 0.0) >= min_score]
+                    except Exception:
+                        rows = []
         driver.close()
 
     if not rows:
-        st.warning("No results. Add per-part documents or keep the fallback enabled.")
+        st.warning("No results. Add per-part documents or enable one of the fallbacks.")
     else:
         st.subheader("Top Context Chunks")
         for idx, r in enumerate(rows, 1):
-            with st.expander(f"[{idx}] {r['category']} = {r['part_name']} ({r['part_id']}) • Score {r['score']:.4f} • Doc {r['doc_name']} ({r['source']})", expanded=(idx==1)):
-                snippet = (r["text"] or "").replace("\n", " ").strip()
+            score_val = float(r.get("score") or 0.0)
+            header = f"[{idx}] {r.get('category')} = {r.get('part_name')} ({r.get('part_id')}) • Score {score_val:.4f} • Doc {r.get('doc_name')} ({r.get('source')})"
+            with st.expander(header, expanded=(idx == 1)):
+                snippet = (r.get("text") or "").replace("\n", " ").strip()
                 st.write(textwrap.fill(snippet, width=100))
+
+        st.download_button(
+            "Download results as JSON",
+            data=json.dumps(rows, indent=2, ensure_ascii=False),
+            file_name="graph_rag_results.json",
+            mime="application/json",
+            use_container_width=True
+        )
 
         answer = synthesize(env, question, rows)
         if answer:
