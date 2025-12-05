@@ -335,7 +335,7 @@ Key features:
 
 ---
 
-# **Why this project is One-of-a-kind for Smart Manufacturing:**
+# *Why this project is one-of-a-kind for Smart Manufacturing:*
 
 ## **1. Combines PLM data + RAG + Graph Intelligence**
 
