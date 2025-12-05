@@ -1,10 +1,4 @@
-This software and instructions are [provided as is](../LICENSE), without warranty of any kind. [Lathes are dangerous.](https://www.worksafe.vic.gov.au/safe-use-metal-turning-lathes)
-
 # Modulathe V2
-
-**NOTE: this version is still a work in progress, below is the provisinal documentation.**
-
-free and open-source metal lathe design where we print the forms using a 3D printer, fill them with concrete or other suitable mix, post-process the parts with sanding and assemble a CNC-ready lathe together using off-the-shelf parts and a few custom CNCed pieces.
 
 - 125mm chuck, MT5 spindle with 38mm through-hole
 - 136mm cross-slide travel
@@ -17,7 +11,7 @@ free and open-source metal lathe design where we print the forms using a 3D prin
 - Integrated spindle lock and magnet bed covers
 - Manual operation and CNC with or without PC
 
-It is a hard, long and expensive project to complete. The end result can surpass many comparable lathes in rigidity and features.
+This reworked lathe can surpass many comparable lathes in rigidity and features.
 
 ## Core ideas
 
@@ -31,23 +25,6 @@ It is a hard, long and expensive project to complete. The end result can surpass
 - Select and modify the modules - motors, bed length, tool posts, bearings
 - Iterate and improve, share your knowledge and results for others to reproduce
 
-## Audience
-
-- People who like to make their own tools
-- 3D printing enthusiasts looking to expand their machine park
-- Craftsmen with specific requirements unmet by the commercially available lathes
-
-People who's needs might not be met by this project:
-
-- Need a good lathe quickly to get actual work done
-- Need to feel the pressure feedback on the handwheels
-- Need a machine meeting local machinery regulations
-
-## Finding files and models
-
-STEP files that can be directly used in 3D printer slicers and to order CNC parts: https://github.com/kachurovskiy/modulathe/tree/master/v2/step - several PDF files in there too for CNC parts with threads.
-
-FreeCAD models that can be used to modify certain parts: https://github.com/kachurovskiy/modulathe/tree/master/v2/freecad - see Assembly.FCStd for the overall picture.
 
 ## Bill of materials
 
@@ -98,11 +75,6 @@ Not counting motors, controller, concrete or rebar.
 - [Feeler gauge](https://www.aliexpress.com/item/1005007758368050.html) - 3 EUR
 - [Bees wax](https://www.amazon.de/-/en/dp/B09QPRQ531) - 9 EUR
 
-## Videos
-
-Concrete and mechanical components: https://youtu.be/lnFw8G95LGo
-
-Motors, wiring and operation: https://youtu.be/Vne_7rnhub0
 
 ## Using epoxy
 
@@ -247,7 +219,7 @@ There are special expanding concrete mixes that slightly increase in side as the
 
 ### Reinforcement
 
-I didn't use any reinforcement - basalt fibers make the mix hard to compact and I forgot about steel rebar.
+No reinforcement used - basalt fibers make the mix hard to compact no steel rebar used.
 
 Ideally there would be reinforcement embedded into the mix and additonally a space for two M12 rods to insert into the base after curing for post-tensioning.
 
@@ -295,4 +267,4 @@ After that, turn the mold upside-down use the light drop technique from the vide
 
 Cleanup and level the concrete sticking out of the mold before de-molding. You should see the 22 plastic circles in the concrete that would need to be drilled out later.
 
-Alternate applying some pressure on the concrete with 4 M5 bolts and dropping the mold upside-down on wooden blocks - https://youtu.be/lnFw8G95LGo?si=SQofnwwmO9b61xAE&t=192
+Alternate applying some pressure on the concrete with 4 M5 bolts and dropping the mold upside-down on wooden blocks.

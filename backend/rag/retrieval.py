@@ -6,28 +6,50 @@ from ..db import run_read, get_session
 from ..embeddings import embed_text
 
 
-def _search_parts_by_embedding(
-    question_emb: List[float], k: int = 5
+def _search_parts(
+    question: str,
+    question_emb: List[float],
+    k: int = 5
 ) -> List[Dict[str, Any]]:
-    query = """
+    # 1) Semantic vector search
+    vec_query = """
     CALL db.index.vector.queryNodes('part_embedding_index', $k, $embedding)
     YIELD node, score
-    RETURN node, score
-    ORDER BY score DESC
+    RETURN node, score, 'vector' AS source
     """
-    rows = run_read(query, {"k": k, "embedding": question_emb})
-    results = []
-    for r in rows:
-        node = r["node"]
-        results.append(
-            {
-                "part_id": node.get("part_id"),
+    vec_rows = run_read(vec_query, {"k": k, "embedding": question_emb})
+
+    # 2) Fulltext search (if index exists)
+    # This will not error if index missing, but you can wrap in try/except if needed.
+    ft_query = """
+    CALL db.index.fulltext.queryNodes('part_fulltext_idx', $q, $limit)
+    YIELD node, score
+    RETURN node, score, 'fulltext' AS source
+    """
+    ft_rows = run_read(ft_query, {"q": question, "limit": k})
+
+    # 3) Merge results by part_id, keep best score
+    merged: Dict[str, Dict[str, Any]] = {}
+    for row in vec_rows + ft_rows:
+        node = row["node"]
+        pid = node.get("part_id")
+        if not pid:
+            continue
+        existing = merged.get(pid)
+        score = float(row["score"] or 0.0)
+
+        if not existing or score > existing["score"]:
+            merged[pid] = {
+                "part_id": pid,
                 "name": node.get("name"),
                 "category": node.get("category"),
                 "description": node.get("description"),
-                "score": r["score"],
+                "score": score,
+                "source": row["source"],
             }
-        )
+
+    # 4) Sort by score desc, then take top k
+    results = sorted(merged.values(), key=lambda x: x["score"], reverse=True)[:k]
     return results
 
 
@@ -87,7 +109,7 @@ def retrieve_context(
     k_parts: int = 5,
 ) -> Dict[str, Any]:
     emb = embed_text(question)
-    parts = _search_parts_by_embedding(emb, k=k_parts)
+    parts = _search_parts(question, emb, k=k_parts)
     parts = _enrich_parts_with_specs_and_products(parts)
     part_ids = [p["part_id"] for p in parts if p.get("part_id")]
     compat = _fetch_compatibility_for_parts(part_ids)
@@ -97,3 +119,4 @@ def retrieve_context(
         "parts": parts,
         "compatibility": compat,
     }
+

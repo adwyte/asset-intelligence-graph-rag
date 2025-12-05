@@ -1,41 +1,548 @@
 product:
-  name: Modulathe V2
+  name: Industrial Lathe Machine
   description: >
-    Open-source modular lathe with concrete frame, upgraded spindle mount, and linear motion system.
+    Open-source modular CNC/Manual hybrid lathe with a concrete/epoxy-granite frame,
+    precision linear rails, ballscrews, heavy-duty spindle, and customizable bed length.
+    Features include 125mm Sanou chuck, MT5 spindle with 38mm through-hole, 136mm
+    cross-slide travel, 300mm turning diameter, double-nut Z-axis, and modular toolpost.
+  sku: Industrial-Lathe
+
 parts:
-  - part_id: MOD-SPINDLE-001
-    name: Main Spindle Assembly
+
+  # --- Spindle & Workholding
+  - part_id: SPINDLE-CHUCK-125
+    name: Sanou 125mm Self-Centering Chuck
     category: Spindle
-    description: 500W brushless DC motor with ER11 collet.
-    specs:
-      - key: power
-        value: 500
-        unit: W
-      - key: connector
-        value: ER11
-        unit: type
-      - key: voltage
-        value: 24
-        unit: V
-  - part_id: MOD-CHUCK-002
-    name: 3-Jaw Chuck
-    category: Workholding
-    description: Steel self-centering chuck with 80mm diameter.
+    description: >
+      125mm three-jaw steel self-centering chuck used as the main workholding device.
+    source_url: "https://www.aliexpress.com/item/1005007987289683.html"
     specs:
       - key: diameter
-        value: 80
+        value: 125
         unit: mm
+      - key: type
+        value: "3-jaw self-centering"
+        unit: type
       - key: material
         value: steel
         unit: type
-  - part_id: MOD-CONTROLLER-003
-    name: Motor Controller
-    category: Electronics
-    description: Brushless controller supporting 24V input, PWM speed control.
+
+  - part_id: SPINDLE-MT5-38HOLE
+    name: MT5 Spindle (38mm Through-Hole)
+    category: Spindle
+    description: >
+      MT5 spindle with 38mm through-hole, Type B.
+    source_url: "https://www.aliexpress.com/item/1005004521050803.html"
     specs:
-      - key: voltage
-        value: 24
-        unit: V
-      - key: control
-        value: PWM
+      - key: taper
+        value: MT5
         unit: type
+      - key: through_hole
+        value: 38
+        unit: mm
+      - key: type
+        value: B
+        unit: type
+
+  - part_id: SPINDLE-NUT-M45
+    name: Spindle Nut M45-1.5
+    category: Spindle
+    description: >
+      Spindle nut with 1.5mm pitch and M45 thread.
+    source_url: "https://www.aliexpress.com/item/1005004257672565.html"
+    specs:
+      - key: thread
+        value: M45
+        unit: size
+      - key: pitch
+        value: 1.5
+        unit: mm
+
+  - part_id: BEARING-3209
+    name: NSK 3209 B 2RSRTNG
+    category: Bearings
+    description: >
+      Angular contact bearing for the inner headstock bearing position.
+    source_url: "https://motionparts.de/en/products/3209-b-2rsrtng-nsk"
+    specs:
+      - key: model
+        value: 3209
+        unit: type
+      - key: seals
+        value: 2RS
+        unit: type
+
+  - part_id: BEARING-3210
+    name: NSK 3210 B 2RSRTNG
+    category: Bearings
+    description: >
+      Angular contact bearing for the outer headstock bearing position.
+    source_url: "https://motionparts.de/en/products/3210-b-2rsrtng-nsk"
+    specs:
+      - key: model
+        value: 3210
+        unit: type
+      - key: seals
+        value: 2RS
+        unit: type
+
+  # --- Z Axis
+  - part_id: Z-BALLSCREW-DFU1605
+    name: DFU1605 Ballscrew (C5, 600mm)
+    category: Z Axis
+    description: >
+      1605 ballscrew, 600mm length, with double nut recommended for backlash-free Z movement.
+    source_url: "https://www.aliexpress.com/item/1005004126133993.html"
+    specs:
+      - key: diameter
+        value: 16
+        unit: mm
+      - key: pitch
+        value: 5
+        unit: mm
+      - key: length
+        value: 600
+        unit: mm
+      - key: accuracy
+        value: C5
+        unit: grade
+      - key: nut
+        value: double
+        unit: type
+
+  - part_id: Z-LINEAR-RAIL-HGR20
+    name: HGR20 Linear Rail Set + 4×HGH20CA
+    category: Z Axis
+    description: >
+      HGR20 linear rails with four HGH20CA carriage blocks, 600mm length.
+    source_url: "https://www.aliexpress.com/item/1005006571096820.html"
+    specs:
+      - key: rail_size
+        value: 20
+        unit: mm
+      - key: length
+        value: 600
+        unit: mm
+      - key: carriage_blocks
+        value: 4
+        unit: count
+
+  - part_id: Z-MOTOR-MOUNT-HM12
+    name: HM12-57 Motor Mount
+    category: Z Axis
+    description: >
+      Motor mount compatible with DFU1605 ballscrews.
+    source_url: "https://www.aliexpress.com/item/1005007378312793.html"
+    specs:
+      - key: compatibility
+        value: DFU1605
+        unit: type
+
+  # --- X Axis
+  - part_id: X-BALLSCREW-SFU1204
+    name: SFU1204 Ballscrew (C5, 300mm)
+    category: X Axis
+    description: >
+      1204 ballscrew for the cross-slide assembly, 300mm length.
+    source_url: "https://www.aliexpress.com/item/1005001335646337.html"
+    specs:
+      - key: diameter
+        value: 12
+        unit: mm
+      - key: pitch
+        value: 4
+        unit: mm
+      - key: length
+        value: 300
+        unit: mm
+      - key: accuracy
+        value: C5
+        unit: grade
+
+  - part_id: X-LINEAR-RAIL-HGR15
+    name: HGR15 Linear Rail Set + 4×HGW15CC
+    category: X Axis
+    description: >
+      HGR15 rails with four HGW15CC carriage blocks, 300mm length.
+    source_url: "https://www.aliexpress.com/item/1005006571096820.html"
+    specs:
+      - key: rail_size
+        value: 15
+        unit: mm
+      - key: length
+        value: 300
+        unit: mm
+      - key: carriage_blocks
+        value: 4
+        unit: count
+
+  - part_id: X-MOTOR-MOUNT-HM10
+    name: HM10-57 Motor Mount
+    category: X Axis
+    description: >
+      Motor mount for SFU1204 ballscrews.
+    source_url: "https://www.aliexpress.com/item/1005005236581474.html"
+    specs:
+      - key: compatibility
+        value: SFU1204
+        unit: type
+
+  - part_id: X-BALLSCREW-END-BF10
+    name: BF10 Ballscrew Tail Mount
+    category: X Axis
+    description: >
+      BF10 ballscrew end support for the X-axis screw.
+    source_url: "https://www.aliexpress.com/item/32717973925.html"
+    specs:
+      - key: model
+        value: BF10
+        unit: type
+
+  - part_id: X-NUT-HOUSING-24MM
+    name: 24mm Nut Housing
+    category: X Axis
+    description: >
+      Nut housing used for supporting SFU1204 ballscrew nuts.
+    source_url: "https://www.aliexpress.com/item/1005006822739785.html"
+    specs:
+      - key: internal_diameter
+        value: 24
+        unit: mm
+
+  # --- Tailstock
+  - part_id: TAILSTOCK-MT2
+    name: MT2 Tailstock (100mm)
+    category: Tailstock
+    description: >
+      MT2 taper tailstock with 100mm travel.
+    source_url: "https://www.aliexpress.com/item/1005007709575532.html"
+    specs:
+      - key: taper
+        value: MT2
+        unit: type
+      - key: travel
+        value: 100
+        unit: mm
+
+  - part_id: TAILSTOCK-LINEAR-HGH20
+    name: 4× HGH20CA Blocks for Tailstock
+    category: Tailstock
+    description: >
+      Four HGH20CA carriage blocks used for the tailstock sliding plate.
+    source_url: "https://www.aliexpress.com/item/1005005705301031.html"
+    specs:
+      - key: blocks
+        value: 4
+        unit: count
+      - key: size
+        value: 20
+        unit: mm
+
+  - part_id: TAILSTOCK-TTRACK
+    name: T-Track 30×400mm
+    category: Tailstock
+    description: >
+      30mm aluminum T-track, 400mm length, for tailstock clamping.
+    source_url: "https://www.aliexpress.com/item/1005006225385865.html"
+    specs:
+      - key: width
+        value: 30
+        unit: mm
+      - key: length
+        value: 400
+        unit: mm
+
+  - part_id: TAILSTOCK-TTRACK-HANDLES
+    name: T-Track Handles (2 pcs)
+    category: Tailstock
+    description: >
+      Two clamping handles for the T-track.
+    source_url: "https://www.aliexpress.com/item/1005006225385865.html"
+    specs:
+      - key: count
+        value: 2
+        unit: pcs
+
+  # --- Materials & Tools
+  - part_id: MAT-PETG-10KG
+    name: PETG Filament 10kg
+    category: Materials
+    description: >
+      PETG filament used to print all molds and structural inserts.
+    source_url: "https://www.ebay.de/itm/354057573174?var=624933263556"
+    specs:
+      - key: weight
+        value: 10
+        unit: kg
+      - key: material
+        value: PETG
+        unit: type
+
+  - part_id: INS-M5-INSERTS
+    name: M5 Threaded Inserts (100 pcs)
+    category: Hardware
+    description: >
+      M5 threaded inserts for bed and head molds (in concrete and printed inserts).
+    source_url: "https://www.aliexpress.com/item/1005006798286851.html"
+    specs:
+      - key: count
+        value: 100
+        unit: pcs
+      - key: length
+        value: 10
+        unit: mm
+
+  - part_id: INS-M8-INSERTS
+    name: M8 Threaded Inserts (10 pcs)
+    category: Hardware
+    description: >
+      M8 inserts used for the tailstock mounting interface.
+    source_url: "https://www.aliexpress.com/item/1005008666672949.html"
+    specs:
+      - key: count
+        value: 10
+        unit: pcs
+      - key: length
+        value: 12
+        unit: mm
+
+  - part_id: TOOL-DIAMOND-PLATE
+    name: Large 120 Grit Diamond Plate
+    category: Tools
+    description: >
+      Diamond plate used for sanding and flattening mold surfaces.
+    source_url: "https://www.aliexpress.com/item/1005007177296408.html"
+    specs:
+      - key: grit
+        value: 120
+        unit: grit
+
+  - part_id: MAT-SANDPAPER-240
+    name: Wet Sandpaper 240 Grit (5 pcs)
+    category: Tools
+    description: >
+      240-grit wet sandpaper sheets for smoothing printed molds.
+    source_url: "https://www.aliexpress.com/item/1005005510517824.html"
+    specs:
+      - key: grit
+        value: 240
+        unit: grit
+      - key: count
+        value: 5
+        unit: pcs
+
+  - part_id: FEET-RUBBER
+    name: Rubber Feet 38×M8×15mm (4 pcs)
+    category: Hardware
+    description: >
+      Rubber feet embedded in the bed concrete for machine stability.
+    source_url: "https://www.aliexpress.com/item/1005006179757754.html"
+    specs:
+      - key: count
+        value: 4
+        unit: pcs
+      - key: thread
+        value: M8
+        unit: size
+
+  - part_id: TOOL-STRAIGHTEDGE-300
+    name: 300mm Straight Edge
+    category: Tools
+    description: >
+      Precision straight edge used for alignment and sanding.
+    source_url: "https://www.aliexpress.com/item/4000846597491.html"
+    specs:
+      - key: length
+        value: 300
+        unit: mm
+
+  - part_id: TOOL-FEELER-GAUGE
+    name: Feeler Gauge
+    category: Tools
+    description: >
+      Feeler gauge set used to measure gaps and check alignment.
+    source_url: "https://www.aliexpress.com/item/1005007758368050.html"
+    specs:
+      - key: type
+        value: feeler_gauge
+        unit: type
+
+  - part_id: MAT-BEESWAX
+    name: Beeswax (mold release)
+    category: Materials
+    description: >
+      Beeswax used as mold-release coating for 3D printed molds.
+    source_url: "https://www.amazon.de/-/en/dp/B09QPRQ531"
+    specs:
+      - key: purpose
+        value: mold_release
+        unit: type
+
+  # --- Mold System
+  - part_id: MOLD-BED
+    name: Bed Mold System
+    category: Mold
+    description: >
+      Bed mold assembly including Bed-MoldTop800, connectors, spokes, and depth spacers.
+    specs:
+      - key: bed_volume
+        value: 8900
+        unit: cm3
+    children:
+      - part_id: MOLD-BED-TOP
+        name: Bed-MoldTop800
+        category: Mold
+        description: >
+          Top mold section for the 800mm bed; printed vertically.
+        specs:
+          - key: print_orientation
+            value: vertical
+
+      - part_id: MOLD-BED-CONNECTOR
+        name: Bed-MoldConnector
+        category: Mold
+        description: >
+          Connector pieces (8 required) used for aligning the bed mold during epoxy assembly.
+        specs:
+          - key: quantity_required
+            value: 8
+            unit: pcs
+
+      - part_id: MOLD-BED-SPOKE
+        name: Bed-Spoke
+        category: Mold
+        description: >
+          Structural spokes (4 required) inserted into the mold.
+        specs:
+          - key: quantity_required
+            value: 4
+            unit: pcs
+
+      - part_id: MOLD-BED-DEPTHSPACER
+        name: Bed-DepthSpacer5
+        category: Mold
+        description: >
+          5mm depth spacers (38 required) for threaded insert standoffs.
+        specs:
+          - key: count
+            value: 38
+            unit: pcs
+          - key: thickness
+            value: 5
+            unit: mm
+
+  - part_id: MOLD-HEAD
+    name: Headstock Mold System
+    category: Mold
+    description: >
+      Mold set for casting the headstock, including back, front, motor mold, sides,
+      spokes, spindle molds, spider, and depth spacers.
+    specs:
+      - key: head_volume
+        value: 4620
+        unit: cm3
+    children:
+      - part_id: MOLD-HEAD-BACK
+        name: Head-MoldBack
+        category: Mold
+        description: Rear vertical mold section.
+
+      - part_id: MOLD-HEAD-FRONT
+        name: Head-MoldFront
+        category: Mold
+        description: Front vertical mold section.
+
+      - part_id: MOLD-HEAD-MOTOR
+        name: Head-MoldMotor
+        category: Mold
+        description: Motor recess mold.
+
+      - part_id: MOLD-HEAD-SIDE
+        name: Head-MoldSide
+        category: Mold
+        description: Mold sides (2 required).
+        specs:
+          - key: quantity_required
+            value: 2
+            unit: pcs
+
+      - part_id: MOLD-HEAD-SPOKE
+        name: Head-MoldSpoke
+        category: Mold
+        description: >
+          Structural spokes glued into top mold; 4 required.
+        specs:
+          - key: count
+            value: 4
+            unit: pcs
+
+      - part_id: MOLD-HEAD-SPINDLESTOP
+        name: Head-SpindleStop
+        category: Mold
+        description: Spindle alignment stop feature.
+
+      - part_id: MOLD-HEAD-STOPHOLDER
+        name: Head-StopHolder
+        category: Mold
+        description: Stop holder pieces (2 required).
+        specs:
+          - key: count
+            value: 2
+            unit: pcs
+
+      - part_id: MOLD-HEAD-TOP
+        name: Head-MoldTop
+        category: Mold
+        description: >
+          Top mold piece for the headstock; printed horizontally.
+
+      - part_id: MOLD-HEAD-SPIDER
+        name: Head-Spider
+        category: Mold
+        description: >
+          Spider mold component; printed horizontally.
+
+      - part_id: MOLD-HEAD-SPINDLEBACK
+        name: Head-SpindleBack
+        category: Mold
+        description: >
+          Spindle back mold; printed vertically with 100% infill.
+        specs:
+          - key: infill
+            value: 100
+            unit: percent
+
+      - part_id: MOLD-HEAD-SPINDLEFRONT
+        name: Head-SpindleFront
+        category: Mold
+        description: >
+          Spindle front mold; printed vertically with 100% infill.
+        specs:
+          - key: infill
+            value: 100
+            unit: percent
+
+      - part_id: MOLD-HEAD-DEPTHSPACER
+        name: Head-DepthSpacer5
+        category: Mold
+        description: >
+          5mm depth spacers used in the head mold (68 pieces).
+        specs:
+          - key: count
+            value: 68
+            unit: pcs
+          - key: thickness
+            value: 5
+            unit: mm
+
+  - part_id: MOLD-TAILSTOCK
+    name: Tailstock Plate Mold
+    category: Mold
+    description: >
+      Mold used for casting the tailstock plate; printed horizontally and uses 4 M5 inserts.
+    specs:
+      - key: print_orientation
+        value: horizontal
+      - key: inserts_required
+        value: 4
+        unit: M5

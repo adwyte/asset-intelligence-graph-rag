@@ -50,14 +50,14 @@ def _upsert_product(session: Session, product: Dict[str, Any]) -> None:
 def _upsert_spec(session: Session, part_id: str, spec: Dict[str, Any]) -> None:
     key = spec.get("key")
     value = spec.get("value")
-    unit = spec.get("unit")
-    note = spec.get("note")
+    unit = spec.get("unit") or ""
+    note = spec.get("note") or ""
 
     session.run(
         """
         MATCH (part:Part {part_id: $part_id})
         MERGE (s:Spec {key: $key, value: $value, unit: $unit})
-        ON CREATE SET s.note = $note
+        SET s.note = $note
         MERGE (part)-[:HAS_SPEC]->(s)
         """,
         part_id=part_id,
