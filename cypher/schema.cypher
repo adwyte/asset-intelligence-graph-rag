@@ -96,16 +96,3 @@ OPTIONS {
     `vector.similarity_function`: "cosine"
   }
 };
-
-
-
-// 6. Optional Existence Constraints
-
-
-// Ensure Product has a name
-CREATE CONSTRAINT product_name_exists IF NOT EXISTS
-FOR (p:Product)
-REQUIRE p.name IS NOT NULL;
-
-// (You may add more existence constraints as needed)
-// ------------------------------------------------------------

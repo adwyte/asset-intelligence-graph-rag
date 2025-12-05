@@ -8,8 +8,6 @@ product:
   sku: LATHE-3D-001
 
 parts:
-
-
   # BEARINGS – POM V-Slot wheels for linear motion
 
   - part_id: BEARING-POM-VWHEEL
