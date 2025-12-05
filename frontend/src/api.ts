@@ -133,3 +133,34 @@ export async function uploadAudioAndTranscribe(blob: Blob): Promise<string> {
   const data = await res.json();
   return data.text || "";
 }
+
+
+export async function uploadDocument(file: File): Promise<string> {
+  const form = new FormData();
+  form.append("file", file);
+
+  const res = await fetch(`${API_BASE}/api/docs/upload`, {
+    method: "POST",
+    body: form,
+  });
+
+  if (!res.ok) throw new Error("Document upload failed");
+
+  const data = await res.json();
+  return data.filename;
+}
+
+export async function uploadYaml(file: File): Promise<string> {
+  const form = new FormData();
+  form.append("file", file);
+
+  const res = await fetch(`${API_BASE}/api/docs/upload-yaml`, {
+    method: "POST",
+    body: form,
+  });
+
+  if (!res.ok) throw new Error("YAML upload failed");
+
+  const data = await res.json();
+  return data.status || "ok";
+}

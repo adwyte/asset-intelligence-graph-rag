@@ -75,7 +75,19 @@ def api_list_products():
         ORDER BY name
         """
     )
-    return {"products": rows}
+    return {"products": [{"name": "All Products", "sku": "global"}] + rows}
+
+
+@app.get("/api/graph/{product_name}")
+def api_graph(product_name: str):
+    rows = run_read("""
+        MATCH (p:Product {name: $name})-[:HAS_ASSEMBLY]->(a)
+        OPTIONAL MATCH (a)<-[:BELONGS_TO]-(part:Part)
+        OPTIONAL MATCH (part)-[:HAS_CHILD]->(child:Part)
+        RETURN p, a, part, child
+    """, {"name": product_name})
+
+    return {"graph": rows}
 
 
 # Graph-RAG Query
@@ -143,6 +155,33 @@ def api_new_part_compat(req: NewPartCompatRequest):
     return {"results": results}
 
 
+#Ingest uploaded YAMLs
+@app.post("/api/ingest/yaml")
+async def api_ingest_yaml(file: UploadFile = File(...)):
+    data = await file.read()
+
+    import yaml
+    try:
+        parsed = yaml.safe_load(data)
+        if "product" not in parsed:
+            raise ValueError("Missing 'product' block")
+        if "parts" not in parsed:
+            raise ValueError("Missing 'parts' list")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+    # Save
+    path = f"data/uploads/{file.filename}"
+    with open(path, "wb") as f:
+        f.write(data)
+
+    # Run ingest
+    from backend.ingestion.yaml_ingestor import ingest_yaml_file
+    ingest_yaml_file(path)
+
+    return {"status": "ingested", "product": parsed["product"]["name"]}
+
+
 # Speech-to-Text via Groq Whisper
 @app.post("/api/stt")
 async def api_stt(file: UploadFile = File(...)):
@@ -171,3 +210,30 @@ async def api_stt(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=f"STT error: {e}")
 
     return {"text": text}
+
+
+#Upload Docs
+@app.post("/api/docs/upload")
+async def api_upload_doc(file: UploadFile = File(...)):
+    import os
+    target = f"data/docs/{file.filename}"
+
+    with open(target, "wb") as f:
+        f.write(await file.read())
+
+    return {"status": "ok", "stored_as": target}
+
+
+#Download as PDF
+@app.post("/api/report")
+def api_report(req: QueryRequest):
+    ctx = retrieve_context(...)
+    answer = synthesize_answer(req.question, ctx)
+
+    markdown = f"# Query Report\n\n**Question:** {req.question}\n\n" \
+               f"## Answer\n{answer}\n\n" \
+               f"## Retrieved Parts\n" + \
+               "\n".join([f"- {p['part_id']} ({p['score']:.2f})" for p in ctx["parts"]])
+
+    return {"markdown": markdown}
+
