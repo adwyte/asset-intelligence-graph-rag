@@ -1,0 +1,466 @@
+product:
+  name: 3D-Lathe
+  description: >
+    A compact 3D-printed modular lathe system built from off-the-shelf electronics,
+    aluminum extrusion framing, linear motion hardware, and a DC motor spindle.
+    Supports wood, plastic, and light-metal machining tasks.
+
+  sku: LATHE-3D-001
+
+parts:
+
+
+  # BEARINGS – POM V-Slot wheels for linear motion
+
+  - part_id: BEARING-POM-VWHEEL
+    name: Aokin POM V-Wheel Bearing Set (10 pcs)
+    category: Bearings
+    description: >
+      POM plastic pulley-style V-slot wheels used for smooth linear motion on
+      aluminum extrusion rails. Includes 10 wheels.
+    source_url: "https://amzn.to/3JmhLmZ"
+    specs:
+      - key: material
+        value: POM
+        unit: type
+      - key: bore_diameter
+        value: 5
+        unit: mm
+      - key: outer_diameter
+        value: 24
+        unit: mm
+      - key: height
+        value: 11
+        unit: mm
+      - key: weight
+        value: 14
+        unit: g
+      - key: quantity
+        value: 10
+        unit: pcs
+
+
+  # STEPPER DRIVER – DRV8825
+
+  - part_id: DRIVER-DRV8825
+    name: DRV8825 Stepper Driver Module (5 pcs)
+    category: Electronics
+    description: >
+      DRV8825 stepper motor driver module with heatsink, compatible with RAMPS 1.4
+      and common 3D-printer controller boards.
+    source_url: "https://amzn.to/3LSSHFB"
+    specs:
+      - key: brand
+        value: PDTXCLS
+        unit: type
+      - key: voltage_max
+        value: 45
+        unit: V
+      - key: material
+        value: copper
+        unit: type
+      - key: speed
+        value: 2.2
+        unit: rpm
+      - key: quantity
+        value: 5
+        unit: pcs
+
+
+  # LATHE CHUCK – WEN 4" self-centering wood lathe chuck
+
+  - part_id: CHUCK-WEN-4IN
+    name: WEN 4-Inch 4-Jaw Self-Centering Chuck
+    category: Workholding
+    description: >
+      Four-jaw self-centering scroll chuck with 1" x 8 TPI mount, supporting internal
+      and external gripping for small lathe operations.
+    source_url: "https://a.co/d/fkBqtDs"
+    specs:
+      - key: thread_size
+        value: "1 x 8"
+        unit: TPI
+      - key: capacity
+        value: 2.8
+        unit: in
+      - key: internal_grip_min
+        value: 1.6
+        unit: in
+      - key: internal_grip_max
+        value: 2.8
+        unit: in
+      - key: external_grip_min
+        value: 2.0
+        unit: in
+      - key: external_grip_max
+        value: 3.2
+        unit: in
+      - key: weight
+        value: 0.01
+        unit: oz
+
+
+  # ALUMINUM EXTRUSION – 2020 V-slot, 4 pcs
+
+  - part_id: EXTRUSION-2020-200
+    name: 2020 V-Slot Aluminum Extrusion (4 × 200mm)
+    category: Frame
+    description: >
+      Black anodized 2020 V-slot extrusion bars used for lathe frame, carriage,
+      and linear motion structures.
+    source_url: "https://amzn.to/371d0Cd"
+    specs:
+      - key: dimensions
+        value: "20x20"
+        unit: mm
+      - key: length
+        value: 200
+        unit: mm
+      - key: slot_width
+        value: 6.2
+        unit: mm
+      - key: thickness
+        value: 1.5
+        unit: mm
+      - key: material
+        value: 6063-aluminum
+        unit: alloy
+      - key: quantity
+        value: 4
+        unit: pcs
+
+
+  # MOTOR – 30W DC reversible motor
+
+  - part_id: MOTOR-DC-30W
+    name: Walfront 30W CW/CCW Permanent Magnet DC Motor
+    category: Motor
+    description: >
+      12V reversible DC motor with 30W power rating and up to 3000 RPM output,
+      supporting CW/CCW rotation for spindle duty.
+    source_url: "https://amzn.to/3Jx2gbM"
+    specs:
+      - key: voltage
+        value: 12
+        unit: V
+      - key: power
+        value: 30
+        unit: W
+      - key: rpm_max
+        value: 3000
+        unit: rpm
+      - key: rpm_modes
+        value: "3500/7000"
+        unit: rpm
+      - key: weight
+        value: 1.06
+        unit: lb
+
+
+  # LINEAR MOTION KIT – Lead screw + bearings + shaft
+
+  - part_id: LINEAR-BQLZR-500
+    name: BQLZR 500mm Lead Screw Linear Motion Set
+    category: Linear Motion
+    description: >
+      500mm long 8mm lead screw assembly with coupling, double track rails, and
+      ball bearings suitable for X/Z axis movement.
+    source_url: "https://amzn.to/3DYi7yR"
+    specs:
+      - key: length
+        value: 500
+        unit: mm
+      - key: shaft_diameter
+        value: 8
+        unit: mm
+      - key: bearing_count
+        value: 10
+        unit: pcs
+      - key: material
+        value: zinc
+        unit: type
+      - key: weight
+        value: 0.97
+        unit: kg
+
+
+  # CONTROL BOARD – Arduino Nano (3 pcs)
+
+  - part_id: MCU-ARDUINO-NANO
+    name: Elegoo Nano R3 (3 pcs)
+    category: Electronics
+    description: >
+      Arduino-compatible Nano microcontroller based on ATmega328P with CH340 USB
+      interface. Includes 3 units.
+    source_url: "https://amzn.to/3KAyiFm"
+    specs:
+      - key: cpu_speed
+        value: 16
+        unit: MHz
+      - key: flash_memory
+        value: 512
+        unit: KB
+      - key: ram
+        value: 32
+        unit: KB
+      - key: voltage
+        value: 5
+        unit: V
+      - key: quantity
+        value: 3
+        unit: pcs
+
+
+  # DISPLAY – 20×4 I²C LCD module
+
+  - part_id: DISPLAY-LCD-2004
+    name: SunFounder 20x4 I2C LCD Module
+    category: Electronics
+    description: >
+      20x4 character LCD display with I2C interface for machine feedback, RPM
+      display, and menu navigation.
+    source_url: "https://amzn.to/3jlNzxC"
+    specs:
+      - key: characters
+        value: "20x4"
+        unit: count
+      - key: interface
+        value: I2C
+        unit: type
+      - key: voltage
+        value: 5
+        unit: V
+      - key: display_size
+        value: 3
+        unit: in
+
+
+  # STEPPER MOTOR – NEMA17, high torque
+
+  - part_id: STEPPER-NEMA17
+    name: STEPPERONLINE NEMA 17 Stepper Motor (59Ncm)
+    category: Motor
+    description: >
+      High-torque bipolar NEMA17 stepper motor used for carriage and tool movement.
+    source_url: "https://amzn.to/37yRDb0"
+    specs:
+      - key: holding_torque
+        value: 59
+        unit: Ncm
+      - key: voltage
+        value: 12
+        unit: V
+      - key: current
+        value: 2.0
+        unit: A
+      - key: step_angle
+        value: 1.8
+        unit: deg
+      - key: inductance
+        value: 3.0
+        unit: mH
+      - key: speed
+        value: 200
+        unit: rpm
+
+
+  # THREADED INSERT KIT – Brass
+
+  - part_id: INSERT-KIT-GLARKS
+    name: Glarks 370pcs Brass Heat-Set Insert Kit (M2–M5)
+    category: Hardware
+    description: >
+      Heat-set brass threaded insert assortment for 3D-printed plastic components.
+    source_url: "https://amzn.to/3rhfMKh"
+    specs:
+      - key: material
+        value: brass
+        unit: type
+      - key: thread_sizes
+        value: "M2,M3,M4,M5"
+        unit: type
+      - key: quantity
+        value: 370
+        unit: pcs
+
+
+  # SCREW KIT – Metric bolts M2/M3/M4
+
+  - part_id: SCREW-KIT-METRIC
+    name: Kwokker 1710pc Metric Bolt Kit (M2/M3/M4)
+    category: Hardware
+    description: >
+      Complete assortment of zinc-plated alloy steel bolts, nuts, and washers in
+      metric sizes M2, M3, and M4.
+    source_url: "https://amzn.to/3LRbJfF"
+    specs:
+      - key: sizes
+        value: "M2,M3,M4"
+        unit: type
+      - key: total_quantity
+        value: 1710
+        unit: pcs
+      - key: material
+        value: alloy_steel
+        unit: type
+
+
+  # POWER SUPPLY – 24V 15A
+
+  - part_id: PSU-24V-15A
+    name: AVAWO 24V 15A 360W Switching Power Supply
+    category: Electronics
+    description: >
+      24V regulated switching power supply for motor, driver, and control system power.
+    source_url: "https://amzn.to/3KvCeXE"
+    specs:
+      - key: voltage_output
+        value: 24
+        unit: V
+      - key: current_max
+        value: 15
+        unit: A
+      - key: power
+        value: 360
+        unit: W
+      - key: protections
+        value: "overload, short_circuit, over_voltage"
+        unit: type
+
+
+  # PWM MOTOR CONTROLLER – 60A reversible
+
+  - part_id: PWM-CONTROLLER-60A
+    name: 60A DC Motor PWM Speed Controller (Reversible)
+    category: Electronics
+    description: >
+      High-current PWM motor controller supporting forward/reverse, potentiometer
+      control, and up to 60A peak load.
+    source_url: "https://amzn.to/3Ju8xVw"
+    specs:
+      - key: voltage_range
+        value: "10-55"
+        unit: V
+      - key: current_max
+        value: 60
+        unit: A
+      - key: continuous_current
+        value: 40
+        unit: A
+      - key: frequency
+        value: 15
+        unit: kHz
+
+
+  # TOOL POST – Mini Lathe Quick-Change Tool Post
+
+  - part_id: TOOLPOST-120034
+    name: Mini Lathe Quick Change Tool Post (AXA)
+    category: Workholding
+    description: >
+      Quick-change tool post for small lathes with precision-ground components and
+      0.002mm repeatability.
+    source_url: "https://amzn.to/3DWWvmu"
+    specs:
+      - key: repeatability
+        value: 0.002
+        unit: mm
+      - key: material
+        value: "aluminum + steel"
+        unit: type
+      - key: compatible_lathe_size
+        value: "7x10 to 9x16"
+        unit: in
+
+
+  # ROTARY TOOL – GOXAWEE Flex Shaft Grinder Kit
+
+  - part_id: ROTARY-GOXAWEE
+    name: GOXAWEE Flex Shaft Grinder / Rotary Tool Kit
+    category: Rotary Tool
+    description: >
+      Professional variable-speed rotary grinder with flex shaft, 3-jaw chuck,
+      and 131 accessory bits.
+    source_url: "https://amzn.to/378IcPR"
+    specs:
+      - key: voltage
+        value: 110
+        unit: V
+      - key: rpm_max
+        value: 24000
+        unit: rpm
+      - key: rpm_min
+        value: 800
+        unit: rpm
+      - key: power
+        value: 380
+        unit: W
+
+
+  # CARBIDE BURR SET – Tungsten steel
+
+  - part_id: BURR-CARBIDE-10PC
+    name: Tungsten Carbide Rotary Burr Set (10 pcs)
+    category: Rotary Tool
+    description: >
+      Double-cut tungsten carbide burr set with 1/8” shank for engraving,
+      carving, and polishing.
+    source_url: "https://amzn.to/3E2nyNh"
+    specs:
+      - key: shank_diameter
+        value: 1/8
+        unit: in
+      - key: cutting_diameter
+        value: 1/4
+        unit: in
+      - key: rpm_range
+        value: "25000-50000"
+        unit: rpm
+      - key: hardness
+        value: 85
+        unit: HRA
+
+
+  # BELT – 150XL037 timing belt
+
+  - part_id: BELT-150XL037
+    name: 150XL037 Timing Belt
+    category: Transmission
+    description: >
+      XL timing belt for spindle or leadscrew drive.
+    specs:
+      - key: length
+        value: 150
+        unit: XL
+      - key: width
+        value: 0.37
+        unit: in
+
+
+  # BALL BEARING – B17-107D
+
+  - part_id: BEARING-B17-107D
+    name: B17-107D Deep Groove Ball Bearing
+    category: Bearings
+    description: >
+      Deep groove bearing used for spindle support.
+    specs:
+      - key: model
+        value: B17-107D
+        unit: type
+
+
+  # SHAFT – 17mm × 200mm
+
+  - part_id: SHAFT-17X200
+    name: Steel Shaft 17mm × 200mm
+    category: Mechanical
+    description: >
+      Solid steel shaft used for spindle or roller assemblies.
+    specs:
+      - key: diameter
+        value: 17
+        unit: mm
+      - key: length
+        value: 200
+        unit: mm

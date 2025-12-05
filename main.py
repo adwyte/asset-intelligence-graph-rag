@@ -7,6 +7,7 @@ from typing import Any, Dict, Optional
 from backend.rag.retrieval import retrieve_context
 from backend.rag.synthesis import synthesize_answer
 from backend.db import get_driver, run_read
+from backend.compatibility.scoring import compute_compatibility_for_new_part
 
 
 app = FastAPI(title="Asset Intelligence Graph-RAG API")
@@ -29,6 +30,15 @@ class QueryRequest(BaseModel):
 class QueryResponse(BaseModel):
     answer: str
     context: Dict[str, Any]
+
+
+class NewPartCompatibilityRequest(BaseModel):
+    product_name: str
+    description: str
+    category: Optional[str] = None
+    specs: Optional[Dict[str, Dict[str, Any]]] = None  # {key: {value, unit}}
+    assembly_hint: Optional[str] = None
+    top_k: int = 10
 
 
 @app.get("/api/health")
@@ -90,3 +100,23 @@ def api_get_part_compat(part_id: str):
         {"id": part_id},
     )
     return {"part_id": part_id, "compatibility": rows}
+
+
+@app.post("/api/compat/new-part")
+def api_new_part_compat(req: NewPartCompatibilityRequest):
+    specs_typed = None
+    if req.specs:
+        specs_typed = {
+            k: (v.get("value"), v.get("unit", ""))
+            for k, v in req.specs.items()
+        }
+
+    results = compute_compatibility_for_new_part(
+        product_name=req.product_name,
+        description=req.description,
+        category=req.category,
+        specs=specs_typed,
+        assembly_hint=req.assembly_hint,
+        top_k=req.top_k,
+    )
+    return {"results": results}
