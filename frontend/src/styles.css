@@ -189,3 +189,31 @@ button.button.small {
   justify-content: center;
   gap: 54px;
 }
+
+.pill-button {
+  display: inline-block;
+  padding: 6px 16px;
+  border: 1px solid #000;
+  border-radius: 999px;
+  background: #fff;
+  color: #000;
+  font-size: 14px;
+  font-family: Inter, sans-serif;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.pill-button:hover {
+  background: #000;
+  color: #fff;
+}
+
+.pill-button input[type="file"] {
+  display: none;
+}
+
+.speak-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}

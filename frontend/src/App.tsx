@@ -278,13 +278,13 @@ const App: React.FC = () => {
             <div style={{ marginTop: 24 }}>
               <h3 style={{ fontSize: 16, marginBottom: 4 }}>Upload Documents</h3>
               <p className="small text-muted">
-                Upload <strong>BOMs, datasheets, manuals, images, PDFs</strong>  
-                (stored, not ingested yet).  
-                Upload a <strong>YAML</strong> file to auto-ingest a new product.
+                Upload <strong>BOMs, datasheets, manuals, images, PDFs </strong>  
+                (stored, not ingested yet).
+                <p>Upload a <strong>YAML</strong> file to auto-ingest a new product.</p>
               </p>
 
               <div className="row" style={{ marginTop: 12 }}>
-                <label className="button secondary small" style={{ cursor: "pointer" }}>
+                <label className="pill-button">
                   Upload Docs
                   <input
                     type="file"
@@ -295,7 +295,7 @@ const App: React.FC = () => {
                   />
                 </label>
 
-                <label className="button secondary small" style={{ cursor: "pointer" }}>
+                <label className="pill-button">
                   Upload YAML
                   <input
                     type="file"

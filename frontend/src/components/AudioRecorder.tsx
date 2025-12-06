@@ -78,17 +78,13 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ onTranscription }) => {
 
   return (
     <button
-      type="button"
-      onClick={handleClick}
-      disabled={loading}
-      style={{
-        padding: "8px 16px",
-        borderRadius: 999,
-        border: "1px solid #d4d4d8",
+    type="button"
+    onClick={handleClick}
+    disabled={loading}
+    className="pill-button speak-button"
+    style={{
         background: recording ? "#fee2e2" : "#ffffff",
-        cursor: "pointer",
-        fontSize: 14,
-      }}
+    }}
     >
       {loading
         ? "Transcribing..."
