@@ -169,16 +169,63 @@ def _functional_role_similarity(p1: PartInfo, p2: PartInfo) -> Tuple[float, List
 
     score = 0.0
 
-    # known useful pairings
     pairings = {
         ("Bearings", "Spindle"),
         ("Spindle", "Bearings"),
+
         ("Z Axis", "Z Axis"),
         ("X Axis", "X Axis"),
+
         ("Tailstock", "Tailstock"),
+
         ("Mold", "Mold"),
         ("Materials", "Mold"),
         ("Tools", "Mold"),
+
+        ("Workholding", "Spindle"),  # Chuck ⇄ Spindle
+        ("Spindle", "Workholding"),
+
+        ("Motor", "Spindle"),  # DC spindle motor / drive
+        ("Spindle", "Motor"),
+
+        ("Transmission", "Spindle"),  # Belt drive ⇄ spindle rotation
+        ("Spindle", "Transmission"),
+
+        ("Mechanical", "Spindle"),  # Shafts used in spindle system
+        ("Spindle", "Mechanical"),
+
+        ("Bearings", "Mechanical"),  # supporting rotating shafts
+        ("Mechanical", "Bearings"),
+
+        ("Linear Motion", "Frame"),  # linear rails mounted on 2020 extrusion
+        ("Frame", "Linear Motion"),
+
+        ("Linear Motion", "Motor"),  # NEMA17 stepper drives linear axes
+        ("Motor", "Linear Motion"),
+
+        ("Linear Motion", "Hardware"),  # screws, inserts used in motion assembly
+        ("Hardware", "Linear Motion"),
+
+        ("Frame", "Hardware"),  # bolts + inserts mounting onto extrusion
+        ("Hardware", "Frame"),
+
+        ("Electronics", "Motor"),  # PWM → DC motor, driver → NEMA17
+        ("Motor", "Electronics"),
+
+        ("Electronics", "Linear Motion"),  # Arduino + driver controlling stepper axis
+        ("Linear Motion", "Electronics"),
+
+        ("Electronics", "Tools"),  # Display, control UI, etc.
+        ("Tools", "Electronics"),
+
+        ("Rotary Tool", "Tools"),  # Dremel + carbide burrs
+        ("Tools", "Rotary Tool"),
+
+        ("Rotary Tool", "Workholding"),  # rotary engraving/cutting often mounted
+        ("Workholding", "Rotary Tool"),
+
+        ("Hardware", "Materials"),
+        ("Materials", "Hardware"),
     }
 
     if (p1.category, p2.category) in pairings:
